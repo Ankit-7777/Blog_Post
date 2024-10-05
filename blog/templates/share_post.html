@@ -1,0 +1,18 @@
+<!-- share_post.html -->
+{% extends 'base.html' %}
+
+{% block title %}Share Post{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">Share Post: {{ post.title }}</h1>
+    <form method="post" class="bg-white p-6 rounded-lg shadow-md">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+            <input type="email" name="email" id="email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Share
+        </button>
+    </form>
+{% endblock %}

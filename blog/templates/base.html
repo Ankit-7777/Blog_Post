@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-lg sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex space-x-7">
+                    <a href="{% url 'post_list' %}" class="text-2xl font-semibold text-gray-800 hover:text-green-500 transition duration-300">
+                        My Blog
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'post_create' %}" class="text-gray-600 font-medium hover:text-green-500 transition duration-300">New Post</a>
+                        <a href="{% url 'logout' %}" class="bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-400 transition duration-300">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 font-medium hover:text-green-500 transition duration-300">Log In</a>
+                        <a href="{% url 'signup' %}" class="bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-400 transition duration-300">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto mt-10 px-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

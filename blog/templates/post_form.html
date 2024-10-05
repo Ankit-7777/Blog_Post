@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if post.pk %}Edit Post{% else %}New Post{% endif %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-teal-400 via-cyan-500 to-blue-600">
+    <div class="bg-white p-8 rounded-lg shadow-lg transform transition-all duration-500 hover:shadow-2xl w-full max-w-3xl">
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-8 text-center">{% if post.pk %}Edit Post{% else %}New Post{% endif %}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <label for="title" class="block text-lg font-semibold text-gray-700">Title</label>
+                <input type="text" name="title" value="{{ post.title }}" class="border border-gray-300 rounded-lg p-3 w-full transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-500 focus:outline-none" required>
+            </div>
+            
+            <div class="mb-6">
+                <label for="content" class="block text-lg font-semibold text-gray-700">Content</label>
+                <textarea name="content" rows="6" class="border border-gray-300 rounded-lg p-3 w-full transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-500 focus:outline-none" required>{{ post.content }}</textarea>
+            </div>
+            
+            <div class="mb-6">
+                <label for="tags" class="block text-lg font-semibold text-gray-700">Tags (comma separated)</label>
+                <input type="text" name="tags" value="{{ post.tags.all|join:', ' }}" class="border border-gray-300 rounded-lg p-3 w-full transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-500 focus:outline-none">
+            </div>
+            
+            <div class="mb-6">
+                <label for="image" class="block text-lg font-semibold text-gray-700">Image</label>
+                <input type="file" name="image" class="border border-gray-300 rounded-lg p-3 w-full transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                <p class="text-gray-500 text-sm mt-2">Optional: Upload an image (JPEG, PNG)</p>
+            </div>
+            
+            <div class="mb-6">
+                <label for="video" class="block text-lg font-semibold text-gray-700">Video</label>
+                <input type="file" name="video" class="border border-gray-300 rounded-lg p-3 w-full transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                <p class="text-gray-500 text-sm mt-2">Optional: Upload a video (MP4, AVI)</p>
+            </div>
+            
+            <div class="flex justify-center">
+                <button type="submit" class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform duration-300 hover:scale-105">
+                    {% if post.pk %}Update{% else %}Create{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelector('input[name="image"]').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            document.querySelector('input[name="video"]').disabled = true;
+        } else {
+            document.querySelector('input[name="video"]').disabled = false;
+        }
+    });
+
+    document.querySelector('input[name="video"]').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            document.querySelector('input[name="image"]').disabled = true;
+        } else {
+            document.querySelector('input[name="image"]').disabled = false;
+        }
+    });
+</script>
+{% endblock %}

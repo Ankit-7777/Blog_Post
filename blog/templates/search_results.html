@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(to right, #009688, #4DB6AC);
+        color: #333;
+        font-family: Arial, sans-serif;
+       
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #ffffff;
+    }
+
+    .post-card {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .post-title {
+        color: #00796B;
+        transition: color 0.3s ease;
+    }
+
+    .post-title:hover {
+        color: #004D40;
+    }
+
+    .post-meta {
+        color: #888;
+        margin-bottom: 10px;
+    }
+
+    .tag {
+        background-color: #f2f2f2;
+        border-radius: 20px;
+        padding: 5px 10px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .no-results {
+        text-align: center;
+        font-size: 18px;
+        color: #ffffff;
+        margin-top: 20px;
+    }
+
+    /* Pagination styles */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination-link {
+        margin: 0 5px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        background-color: #00796B; /* Dark Teal */
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .pagination-link:hover {
+        background-color: #004D40; /* Darker Teal */
+    }
+
+    /* For 'Read More' button consistency */
+    .read-more {
+        display: inline-block;
+        margin-top: 10px;
+        background-color: #00796B;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .read-more:hover {
+        background-color: #004D40;
+    }
+</style>
+
+<h1 class="text-3xl font-bold mb-6">Search Results for "{{ query }}"</h1>
+
+{% for post in results %}
+    <div class="post-card">
+        <h2 class="text-2xl font-bold mb-2">
+            <a href="{% url 'post_detail' post.id %}" class="post-title">{{ post.title }}</a>
+        </h2>
+        <p class="post-meta">{{ post.created_date|date:"F d, Y" }} by {{ post.author }}</p>
+        <p class="mb-4">{{ post.content|truncatewords:30 }}</p>
+        <div class="flex flex-wrap">
+            {% for tag in post.tags.all %}
+                <span class="tag">#{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+        <a href="{% url 'post_detail' post.id %}" class="read-more">Read More</a>
+    </div>
+{% empty %}
+    <p class="no-results">No results found for "{{ query }}".</p>
+{% endfor %}
+
+
+{% endblock %}

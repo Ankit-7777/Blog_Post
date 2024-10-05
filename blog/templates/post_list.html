@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+    body {
+        background: linear-gradient(135deg, #3c42b90e, #7ef4e0);
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .post-card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #ffffff;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .post-card.no-media {
+        background-image: url("{% static 'images/blog_bg.webp' %}");
+        height: auto;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative; 
+    }
+
+    .author-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #4b5563;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #ffffff;
+        margin-right: 12px;
+    }
+
+    .post-content {
+        padding: 16px;
+    }
+
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .tag {
+        transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+        transform: translateY(-2px);
+    }
+
+    .search-form {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .search-input {
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+
+    .search-button {
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination-link {
+        margin: 0 5px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        background-color: #00796B; 
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .pagination-link:hover {
+        background-color: #004D40;
+    }
+
+
+    /* Dropdown styles */
+    .dropdown {
+        position: relative;
+        margin-left: auto;
+        display: inline-block;
+    }
+    
+    .dropdown-button {
+        background-color: #00796B; 
+        color: white; 
+        border: none; 
+        padding: 10px 15px; 
+        font-size: 16px; 
+        border-radius: 5px; 
+        cursor: pointer; 
+    }
+    
+    .dropdown-menu {
+        display: none; 
+        position: absolute; 
+        background-color: white; 
+        min-width: 40px; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        z-index: 4; 
+        border-radius: 5px; 
+        margin-top: 5px; 
+      
+    }
+    
+    .dropdown-menu.show {
+        display: block; 
+    }
+    
+    .dropdown-item {
+        display: flex; 
+        align-items: center; 
+        padding: 5px 10px;
+        font-size: 16px; 
+        color: #333; 
+        text-decoration: none; 
+        transition: background-color 0.2s; 
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f0f0f0; 
+    }
+    
+    .dropdown-item svg {
+        height: 20px; 
+        width: 20px;
+        margin-right: 10px; 
+    }
+    
+
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    .media-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-top: 56.25%;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .media-container img,
+    .media-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+<div class="content-wrapper">
+    <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">Blog Posts</h1>
+
+    <div class="search-form">
+        <form action="{% url 'post_search' %}" method="get" class="flex">
+            <input type="text" name="query" placeholder="Search posts..." class="search-input flex-grow p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="submit" class="search-button bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-r-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    {% for post in posts %}
+        <div class="post-card shadow-md mb-6 {% if not post.image and not post.video %}no-media{% endif %}">
+            <div class="post-header">
+                <div class="flex items-center">
+
+                    <div class="author-avatar">
+                        {{ post.author.username|first|upper }}
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold">{{ post.author }}</h2>
+                        <p class="text-sm text-gray-500">{{ post.created_date|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+                <!-- Dropdown button -->
+                <div class="dropdown">
+                    <button class="dropdown-button" id="dropdownButton{{ post.id }}">
+                        &#x22EE; <!-- Three dots -->
+                    </button>
+               
+
+                    <div class="dropdown-menu" id="dropdownMenu{{ post.id }}">
+                        <a href="{% url 'share_post' post.id %}" class="dropdown-item">
+                            <i class="fas fa-share-alt" style="color: #00796B;"></i>
+                        </a>
+                        <a href="{% url 'post_update' post.id %}" class="dropdown-item">
+                            <i class="fas fa-edit" style="color: #FFD700;"></i> 
+                        </a>
+                        <a href="{% url 'post_delete' post.id %}" class="dropdown-item">
+                            <i class="fas fa-trash" style="color: #D32F2F;"></i> 
+                        </a>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <div class="post-content">
+                <h3 class="text-2xl font-bold mb-3">
+                    <a href="{% url 'post_detail' post.id %}" class="text-blue-600 hover:text-blue-800">{{ post.title }}</a>
+                </h3>
+                <p class="text-gray-700 mb-4">{{ post.content|truncatewords:30 }}</p>
+
+                <!-- Media Display -->
+                {% if post.image %}
+                    <div class="media-container">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    </div>
+                {% elif post.video %}
+                    <div class="media-container">
+                        <video controls>
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                {% endif %}
+
+                <div class="flex flex-wrap">
+                    {% for tag in post.tags.all %}
+                        <span class="tag bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="post-footer">
+                <div class="flex items-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+                    </svg>
+                    <span>{{ post.comments.count }} comments</span>
+                </div>
+                <a href="{% url 'post_detail' post.id %}" class="text-blue-500 hover:text-blue-700 font-semibold">Read more</a>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-center text-gray-600 italic">No posts found.</p>
+    {% endfor %}
+
+
+    
+
+{% if is_paginated %}
+<div class="flex justify-center mt-8">
+    <nav aria-label="Page navigation">
+        <ul class="inline-flex -space-x-px">
+            {% if page_obj.has_previous %}
+                <li>
+                    <a href="?page=1" class="pagination-link bg-white text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-l-lg" aria-label="First">First</a>
+                </li>
+                <li>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link bg-white text-gray-500 hover:bg-gray-100 px-3 py-2" aria-label="Previous">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li>
+                        <span class="pagination-link z-10 bg-blue-100 border-blue-300 text-blue-600 px-3 py-2">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="?page={{ num }}" class="pagination-link bg-white text-gray-500 hover:bg-gray-100 px-3 py-2">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li>
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-link bg-white text-gray-500 hover:bg-gray-100 px-3 py-2" aria-label="Next">Next</a>
+                </li>
+                <li>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link bg-white text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-r-lg" aria-label="Last">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+    </div>
+</div>
+
+
+<script>
+    // JavaScript to handle dropdown visibility
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownButtons = document.querySelectorAll('.dropdown-button');
+
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation(); // Prevent closing on click inside dropdown
+                const dropdownMenu = document.getElementById('dropdownMenu' + this.id.replace('dropdownButton', ''));
+                dropdownMenu.classList.toggle('show');
+            });
+        });
+
+        // Close all dropdowns if clicked outside
+        window.addEventListener('click', function () {
+            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+            dropdownMenus.forEach(menu => {
+                menu.classList.remove('show');
+            });
+        });
+    });
+</script>
+
+{% endblock %}

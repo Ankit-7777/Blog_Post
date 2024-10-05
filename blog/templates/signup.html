@@ -1,0 +1,70 @@
+<!-- signup.html -->
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<style>
+
+    .custom-gradient {
+        background: linear-gradient(135deg, #ffb74d, #ff6f61);
+    }
+    
+</style>
+
+
+<div class="fixed inset-0 flex items-center justify-center  custom-gradient bg-opacity-90">
+    <div class="w-full max-w-md bg-white p-10 rounded-lg shadow-lg border border-gray-300">
+        <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-8">Sign Up</h1>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Username Field -->
+            <div class="space-y-2">
+                <label for="id_username" class="block text-gray-700 text-sm font-semibold">Username</label>
+                <input type="text" name="username" id="id_username" 
+                       class="w-full border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-400 rounded-lg shadow-sm px-4 py-2 transition duration-300 ease-in-out" 
+                       placeholder="Enter your username">
+            </div>
+
+            <!-- Email Field
+            <div class="space-y-2">
+                <label for="id_email" class="block text-gray-700 text-sm font-semibold">Email</label>
+                <input type="email" name="email" id="id_email" 
+                       class="w-full border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-400 rounded-lg shadow-sm px-4 py-2 transition duration-300 ease-in-out" 
+                       placeholder="Enter your email">
+            </div> -->
+
+            <!-- Password Field -->
+            <div class="space-y-2">
+                <label for="id_password1" class="block text-gray-700 text-sm font-semibold">Password</label>
+                <input type="password" name="password1" id="id_password1" 
+                       class="w-full border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-400 rounded-lg shadow-sm px-4 py-2 transition duration-300 ease-in-out" 
+                       placeholder="Enter your password">
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="space-y-2">
+                <label for="id_password2" class="block text-gray-700 text-sm font-semibold">Confirm Password</label>
+                <input type="password" name="password2" id="id_password2" 
+                       class="w-full border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-400 rounded-lg shadow-sm px-4 py-2 transition duration-300 ease-in-out" 
+                       placeholder="Confirm your password">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300">
+                    Sign Up
+                </button>
+            </div>
+        </form>
+
+        <!-- Login Redirect -->
+        <div class="text-center mt-4">
+            <p class="text-sm text-gray-600">Already have an account? 
+                <a href="{% url 'login' %}" class="text-green-600 hover:underline">Log in here</a>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
